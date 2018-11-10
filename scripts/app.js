@@ -85,8 +85,8 @@ APP.Main = (function() {
     }
 
     // Colorize on complete.
-    if (storyLoadCount === 0)
-      colorizeAndScaleStories();
+    // if (storyLoadCount === 0)
+    //   colorizeAndScaleStories();
   }
 
   function onStoryClick(details) {
@@ -177,7 +177,7 @@ APP.Main = (function() {
     document.body.classList.add('details-active');
     storyDetails.style.opacity = 1;
 
-    function animate () {
+    function animate() {
 
       // Find out where it currently is.
       var storyDetailsPosition = storyDetails.getBoundingClientRect();
@@ -190,21 +190,24 @@ APP.Main = (function() {
       left += (0 - storyDetailsPosition.left) * 0.1;
 
       // Set up the next bit of the animation if there is more to do.
-      if (Math.abs(left) > 0.5)
-        setTimeout(animate, 4);
-      else
+      if (Math.abs(left) > 0.5) {
+        // setTimeout(animate, 4);
+        requestAnimationFrame(animate);
+      } else {
         left = 0;
-
+      }
       // And update the styles. Wait, is this a read-write cycle?
       // I hope I don't trigger a forced synchronous layout!
       storyDetails.style.left = left + 'px';
+      requestAnimationFrame(animate);
     }
-
+    
     // We want slick, right, so let's do a setTimeout
     // every few milliseconds. That's going to keep
     // it all tight. Or maybe we're doing visual changes
     // and they should be in a requestAnimationFrame
-    setTimeout(animate, 4);
+    // setTimeout(animate, 4);
+    requestAnimationFrame(animate);
   }
 
   function hideStory(id) {
@@ -230,7 +233,8 @@ APP.Main = (function() {
 
       // Set up the next bit of the animation if there is more to do.
       if (Math.abs(left - target) > 0.5) {
-        setTimeout(animate, 4);
+        // setTimeout(animate, 4);
+        requestAnimationFrame(animate);
       } else {
         left = target;
         inDetails = false;
@@ -239,13 +243,15 @@ APP.Main = (function() {
       // And update the styles. Wait, is this a read-write cycle?
       // I hope I don't trigger a forced synchronous layout!
       storyDetails.style.left = left + 'px';
+      requestAnimationFrame(animate);
     }
 
     // We want slick, right, so let's do a setTimeout
     // every few milliseconds. That's going to keep
     // it all tight. Or maybe we're doing visual changes
     // and they should be in a requestAnimationFrame
-    setTimeout(animate, 4);
+    // setTimeout(animate, 4);
+    requestAnimationFrame(animate);
   }
 
   /**
@@ -302,7 +308,7 @@ APP.Main = (function() {
     var scrollTopCapped = Math.min(70, main.scrollTop);
     var scaleString = 'scale(' + (1 - (scrollTopCapped / 300)) + ')';
 
-    colorizeAndScaleStories();
+    // colorizeAndScaleStories();
 
     header.style.height = (156 - scrollTopCapped) + 'px';
     headerTitles.style.webkitTransform = scaleString;
@@ -318,7 +324,7 @@ APP.Main = (function() {
     var loadThreshold = (main.scrollHeight - main.offsetHeight -
         LAZY_LOAD_THRESHOLD);
     if (main.scrollTop > loadThreshold)
-      loadStoryBatch();
+      requestAnimationFrame(loadStoryBatch());
   });
 
   function loadStoryBatch() {
